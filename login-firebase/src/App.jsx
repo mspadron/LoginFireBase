@@ -37,7 +37,7 @@ function App() {
             path='/'
             element={usuario ? <Home correoUsuario={usuario.email} /> : <Login />}
           ></Route>
-          {/* Agrega más rutas según sea necesario */}
+          
         </Routes>
       </BrowserRouter>
     </div>
