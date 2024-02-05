@@ -1,5 +1,5 @@
-import { useState } from 'react'
-
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 //Importación de Firebase
 import appFirebase from '../src/credenciales'
@@ -13,19 +13,33 @@ import './App.css'
 
 function App() {
 
-  const [usuario, setUsuario] = useState(null)
+  const [usuario, setUsuario] = useState(null);
+  const auth = getAuth(appFirebase);
 
-  onAuthStateChanged(auth, (usuarioFirebase)=>{
-    if(usuarioFirebase){
-      setUsuario(usuarioFirebase)
-    }else{
-      setUsuario(null)
-    }
-  })
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (usuarioFirebase) => {
+      if (usuarioFirebase) {
+        setUsuario(usuarioFirebase);
+      } else {
+        setUsuario(null);
+      }
+    });
+
+    // Limpiar el efecto al desmontar el componente
+    return () => unsubscribe();
+  }, [auth]);
 
   return (
     <div>
-      {usuario ? <Home correoUsuario = {usuario.email} /> : <Login/>}
+         <BrowserRouter>
+        <Routes>
+          <Route
+            path='/'
+            element={usuario ? <Home correoUsuario={usuario.email} /> : <Login />}
+          ></Route>
+          {/* Agrega más rutas según sea necesario */}
+        </Routes>
+      </BrowserRouter>
     </div>
   )
 }
